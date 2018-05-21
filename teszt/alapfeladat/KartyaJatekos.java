@@ -15,26 +15,32 @@ public class KartyaJatekos {
 
 		List<String> hand = new ArrayList<>();
 
+		//Erőforrások inicializálása:
 		try (Socket client = new Socket("localhost", 12345);
 				Scanner sc = new Scanner(client.getInputStream());
 				PrintWriter pw = new PrintWriter(client.getOutputStream());
 				Scanner fileSc = new Scanner(new File(fileName));) {
 			
+			//Név elküldése:
 			pw.println(playerName);
 			pw.flush();
 			
+			
+			//8db lap fogadása:
 			for (int i = 0; i < 8; i++) {
 				hand.add(sc.nextLine());
 			}
 			
 			//hand.forEach(card -> System.out.println(card));
 
+			//Játék menete:
 			boolean gameOver = false;
 			String action;
 			int number;
 			while (sc.hasNextLine() && !gameOver) {
 				action = sc.nextLine();
 				switch (action) {
+				//Ha start üzenet jött:
 				case "START":
 					//System.out.println("START");
 					number = Integer.parseInt(fileSc.nextLine());
@@ -42,11 +48,13 @@ public class KartyaJatekos {
 					pw.flush();
 					hand.remove(number-1);
 					break;
+				//Ha vége üzenet jött:
 				case "VEGE":
 					//System.out.println("VEGE");
 					gameOver = true;
 					//System.out.println("Játék vége, veszítettem!");
 					break;
+				//Ha kártya jött:
 				default:
 					//System.out.println(action.toUpperCase());
 					hand.add(action);

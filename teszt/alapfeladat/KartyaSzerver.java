@@ -32,6 +32,7 @@ public class KartyaSzerver {
 		
 		try (ServerSocket server = new ServerSocket(12345);)
 		{
+			//Kapcsolatok fogadása, nevek elküldése, erőforrások inicializálása:
 			for (int i =0; i<players; i++) {
 				Socket client = server.accept();
 				Scanner sc = new Scanner(client.getInputStream());
@@ -47,6 +48,7 @@ public class KartyaSzerver {
 			
 			//System.out.println("CLIENTS HAS CONNECTED");
 			
+			//Lapok kiosztása:
 			for (int i=0; i<deck.size(); i++){
 				int playerNum = i%players;
 				PrintWriter pw = printers.get(names.get(playerNum));
@@ -56,10 +58,13 @@ public class KartyaSzerver {
 			
 			//System.out.println("CLIENTS HANDS ARE READY");
 			
+			//Játék kezdete:
 			PrintWriter pw = printers.get(names.get(0));
 			pw.println("START");
 			pw.flush();
-					
+			
+			
+			//Játék menete:
 			String receivedCard = "";
 			String name = "";
 			int i = 0;
@@ -75,6 +80,7 @@ public class KartyaSzerver {
 				
 				receivedCard = scanner.nextLine();
 				
+				//Ha csacsit kaptunk (vki nyert):
 				if (receivedCard.equals("CSACSI")) {
 					gameOver = true;
 					for (String playerName: names) {
@@ -85,6 +91,7 @@ public class KartyaSzerver {
 						}
 					}
 				}
+				//Ha lapot kaptunk:
 				else {
 					printer.println(receivedCard);
 					printer.flush();
@@ -94,6 +101,7 @@ public class KartyaSzerver {
 				System.out.println(String.format("%s: %s", name, receivedCard));	
 			}
 			
+			//Kapcsolatok bezárása, hogy a kliensek is leálljanak:
 			for (Socket client: clients)
 				client.close();
 			
